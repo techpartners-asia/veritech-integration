@@ -1,4 +1,4 @@
-package veritech
+package veritechSdk
 
 import (
 	"encoding/json"
