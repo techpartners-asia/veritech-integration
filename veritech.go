@@ -16,10 +16,16 @@ type veritech struct {
 }
 
 type Veritech interface {
+	GetProductItemID(code string) (*structs.ProductInfoResponse, error)
+	SendFillInformation(input structs.StoreFillInput) (*structs.StoreFillResponse, error)
+	CheckStaffAndMachine(code string) error
+	TakeSalesPersonBeginQty(code string) (*structs.TakeHTBeginQtyResult, error)
+	TakeStaffIncomeOutcome(staffCode string, date string) (*structs.StaffWarehouseIncomeOutcomeResult, error)
+	SendInvoice(param structs.InvoiceCreateParameters) (structs.SellResponce, string, error)
 }
 
 func New(username, password, endpoint, command string) Veritech {
-	return veritech{
+	return &veritech{
 		Username: username,
 		Password: password,
 		Endpoint: endpoint,
