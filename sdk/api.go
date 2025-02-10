@@ -16,20 +16,27 @@ type API struct {
 
 var (
 	CommandEndpoit = API{
-		Url:    "/erp-services/RestWS/runJson",
+		Url:    "https://erp.teso.mn:8080/erp-services/RestWS/runJson",
 		Method: http.MethodPost,
 	}
 )
 
-func (v *veritech) httpRequest(body interface{}) (response []byte, err error) {
+func (v *Sdk) Send(body interface{}) (response []byte, err error) {
 
-	// if bodyMap, ok := body.(map[string]interface{}); ok {
-	// 	bodyMap["username"] = v.Username
-	// 	bodyMap["password"] = v.Password
-	// }
+	// assert body to map
+	bodyMap, ok := body.(map[string]interface{})
+	if !ok {
+		return nil, errors.New("body is not a map")
+	}
+	bodyMap["username"] = v.Username
+	bodyMap["password"] = v.Password
+	bodyMap["command"] = v.Command
+	bodyMap["languageCode"] = "mn"
+	bodyMap["ignorepermission"] = "1"
 
 	var requestByte []byte
 	var requestBody *bytes.Reader
+
 	if body == nil {
 		requestBody = bytes.NewReader(nil)
 	} else {
@@ -37,7 +44,7 @@ func (v *veritech) httpRequest(body interface{}) (response []byte, err error) {
 		requestBody = bytes.NewReader(requestByte)
 	}
 
-	req, _ := http.NewRequest(CommandEndpoit.Method, v.Endpoint+CommandEndpoit.Url, requestBody)
+	req, _ := http.NewRequest(CommandEndpoit.Method, CommandEndpoit.Url, requestBody)
 	req.Header.Add("Content-Type", "application/json")
 
 	res, err := http.DefaultClient.Do(req)
