@@ -1,0 +1,7 @@
+1. Veritech fill -> item fill       -> SendFillInformation/ SendFillInformationResend
+2. product item id from item code   -> GetProductItemID
+3.  -> CheckStaffAndMachine (check staff and machine)
+4. TakeHTBeginQty (// ХТ эхний үлдэгдэл авах)
+
+5. TakeStaffIncomeOutcome (// Ажилтаны орлого, зарлагыг авах odortoi)
+6. SendInvoice (// Баримт бичиг илгээх)
