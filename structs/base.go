@@ -1,4 +1,4 @@
-package structs
+package veritechModels
 
 type (
 	Base struct {

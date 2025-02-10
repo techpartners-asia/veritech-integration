@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/techpartners-asia/veritech-integration/structs"
+	veritechModels "github.com/techpartners-asia/veritech-integration/structs"
 )
 
 type veritech struct {
@@ -16,12 +16,12 @@ type veritech struct {
 }
 
 type Veritech interface {
-	GetProductItemID(code string) (*structs.ProductInfoResponse, error)
-	SendFillInformation(input structs.StoreFillInput) (*structs.StoreFillResponse, error)
+	GetProductItemID(code string) (*veritechModels.ProductInfoResponse, error)
+	SendFillInformation(input veritechModels.StoreFillInput) (*veritechModels.StoreFillResponse, error)
 	CheckStaffAndMachine(code string) error
-	TakeSalesPersonBeginQty(code string) (*structs.TakeHTBeginQtyResult, error)
-	TakeStaffIncomeOutcome(staffCode string, date string) (*structs.StaffWarehouseIncomeOutcomeResult, error)
-	SendInvoice(param structs.InvoiceCreateParameters) (structs.SellResponce, string, error)
+	TakeSalesPersonBeginQty(code string) (*veritechModels.TakeHTBeginQtyResult, error)
+	TakeStaffIncomeOutcome(staffCode string, date string) (*veritechModels.StaffWarehouseIncomeOutcomeResult, error)
+	SendInvoice(param veritechModels.InvoiceCreateParameters) (veritechModels.SellResponce, string, error)
 }
 
 func New(username, password, endpoint, command string) Veritech {
@@ -34,15 +34,15 @@ func New(username, password, endpoint, command string) Veritech {
 }
 
 // * NOTE * - Vertitech-ээс барааны мэдээлэл авах -> Veritech Item Id
-func (q *veritech) GetProductItemID(code string) (*structs.ProductInfoResponse, error) {
-	input := structs.ProductInfoInput{
-		Base: structs.Base{
+func (q *veritech) GetProductItemID(code string) (*veritechModels.ProductInfoResponse, error) {
+	input := veritechModels.ProductInfoInput{
+		Base: veritechModels.Base{
 			Username:     q.Username,
 			Password:     q.Password,
 			Command:      "MTM_ITEM_004",
 			LanguageCode: "mn",
 		},
-		Paramters: structs.ProductInfoParametersInput{
+		Paramters: veritechModels.ProductInfoParametersInput{
 			ItemCode: code,
 		},
 	}
@@ -52,7 +52,7 @@ func (q *veritech) GetProductItemID(code string) (*structs.ProductInfoResponse, 
 		return nil, err
 	}
 
-	var response structs.ProductInfoResponse
+	var response veritechModels.ProductInfoResponse
 	json.Unmarshal(res, &response)
 
 	if response.Response.Status != "success" {
@@ -63,7 +63,7 @@ func (q *veritech) GetProductItemID(code string) (*structs.ProductInfoResponse, 
 }
 
 // * NOTE * - Машин дүүргэлт хийхэд дүүргэсэн барааны мэдээлэл Veritech - рүү илгээх
-func (q *veritech) SendFillInformation(input structs.StoreFillInput) (*structs.StoreFillResponse, error) {
+func (q *veritech) SendFillInformation(input veritechModels.StoreFillInput) (*veritechModels.StoreFillResponse, error) {
 
 	input.Username = q.Username
 	input.Password = q.Password
@@ -76,7 +76,7 @@ func (q *veritech) SendFillInformation(input structs.StoreFillInput) (*structs.S
 		return nil, err
 	}
 
-	var response structs.StoreFillResponse
+	var response veritechModels.StoreFillResponse
 	if err := json.Unmarshal(res, &response); err != nil {
 		fmt.Println(" Veritech Send Fill Information Response marshalling error - %v", err.Error())
 		return nil, err
@@ -90,8 +90,8 @@ func (q *veritech) CheckStaffAndMachine(code string) error {
 
 	tmp["storeKeeperKeyCode"] = code
 
-	request := structs.CheckRequest{
-		Request: &structs.RequestBody{
+	request := veritechModels.CheckRequest{
+		Request: &veritechModels.RequestBody{
 			Command:    "mtm_sales_skk_code_004",
 			Username:   q.Username,
 			Password:   q.Password,
@@ -104,7 +104,7 @@ func (q *veritech) CheckStaffAndMachine(code string) error {
 		return err
 	}
 
-	var resCheck structs.StaffMachineCheckResponse
+	var resCheck veritechModels.StaffMachineCheckResponse
 	json.Unmarshal(res, &resCheck)
 
 	if resCheck.Response.Status == "success" {
@@ -120,13 +120,13 @@ func (q *veritech) CheckStaffAndMachine(code string) error {
 }
 
 // * NOTE * - ХТ эхний үлдэгдэл авах
-func (q *veritech) TakeSalesPersonBeginQty(code string) (*structs.TakeHTBeginQtyResult, error) {
+func (q *veritech) TakeSalesPersonBeginQty(code string) (*veritechModels.TakeHTBeginQtyResult, error) {
 
 	tmp := make(map[string]interface{})
 	tmp["filterStoreKeeperKeyCode"] = code
 
-	request := structs.CheckRequest{
-		Request: &structs.RequestBody{
+	request := veritechModels.CheckRequest{
+		Request: &veritechModels.RequestBody{
 			Command:    "sales_BEGIN_QTY_MTM_004",
 			Username:   q.Username,
 			Password:   q.Password,
@@ -139,7 +139,7 @@ func (q *veritech) TakeSalesPersonBeginQty(code string) (*structs.TakeHTBeginQty
 		return nil, err
 	}
 
-	var resCheck structs.TakeHTBeginQtyResponse
+	var resCheck veritechModels.TakeHTBeginQtyResponse
 	json.Unmarshal(res, &resCheck)
 
 	if resCheck.Response.Status == "success" {
@@ -154,13 +154,13 @@ func (q *veritech) TakeSalesPersonBeginQty(code string) (*structs.TakeHTBeginQty
 }
 
 // * NOTE * - Ажилтаны орлого, зарлагыг авах odortoi
-func (q *veritech) TakeStaffIncomeOutcome(staffCode string, date string) (*structs.StaffWarehouseIncomeOutcomeResult, error) {
+func (q *veritech) TakeStaffIncomeOutcome(staffCode string, date string) (*veritechModels.StaffWarehouseIncomeOutcomeResult, error) {
 	tmp := make(map[string]interface{})
 	tmp["filterStoreKeeperKeyCode"] = staffCode
 	tmp["filterbookdate"] = date
 
-	request := structs.CheckRequest{
-		Request: &structs.RequestBody{
+	request := veritechModels.CheckRequest{
+		Request: &veritechModels.RequestBody{
 			Command:    "sales_QTY_MTM_004",
 			Username:   q.Username,
 			Password:   q.Password,
@@ -173,7 +173,7 @@ func (q *veritech) TakeStaffIncomeOutcome(staffCode string, date string) (*struc
 		return nil, err
 	}
 
-	var resCheck structs.StaffWarehouseIncomeOutcome
+	var resCheck veritechModels.StaffWarehouseIncomeOutcome
 	json.Unmarshal(res, &resCheck)
 
 	if resCheck.Response.Status == "success" {
@@ -188,9 +188,9 @@ func (q *veritech) TakeStaffIncomeOutcome(staffCode string, date string) (*struc
 }
 
 // * NOTE * - Veritech руу борлуулалтын мэдээлэл илгээх
-func (q *veritech) SendInvoice(param structs.InvoiceCreateParameters) (structs.SellResponce, string, error) {
-	httpRequest := structs.InvoiceCreateRequest{
-		Base: structs.Base{
+func (q *veritech) SendInvoice(param veritechModels.InvoiceCreateParameters) (veritechModels.SellResponce, string, error) {
+	httpRequest := veritechModels.InvoiceCreateRequest{
+		Base: veritechModels.Base{
 			Username: q.Username,
 			Password: q.Password,
 			Command:  "smSalesInvoiceHeaderStoreVMSteso",
@@ -200,10 +200,10 @@ func (q *veritech) SendInvoice(param structs.InvoiceCreateParameters) (structs.S
 
 	res, err := q.httpRequest(httpRequest)
 	if err != nil {
-		return structs.SellResponce{}, "", err
+		return veritechModels.SellResponce{}, "", err
 	}
 
-	var response structs.SellResponce
+	var response veritechModels.SellResponce
 	json.Unmarshal(res, &response)
 
 	return response, string(res), nil
