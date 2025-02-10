@@ -18,7 +18,7 @@ type veritech struct {
 type Veritech interface {
 }
 
-func New(username, password, storeCode, storeName, endpoint, command string) Veritech {
+func New(username, password, endpoint, command string) Veritech {
 	return veritech{
 		Username: username,
 		Password: password,
