@@ -3,6 +3,7 @@ package veritechSdk
 type BaseService interface {
 	StaffService() StaffManagerService
 	ProductService() ProductService
+	TripService() TripService
 }
 
 type sdk struct {
@@ -21,5 +22,9 @@ func (co *sdk) StaffService() StaffManagerService {
 
 func (co *sdk) ProductService() ProductService {
 	// co.Command = "MTM_ITEM_004"
+	return co
+}
+
+func (co *sdk) TripService() TripService {
 	return co
 }
