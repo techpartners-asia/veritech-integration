@@ -21,7 +21,7 @@ var (
 	}
 )
 
-func (v *Sdk) Send(body interface{}) (response []byte, err error) {
+func (v *sdk) Send(body interface{}) (response []byte, err error) {
 
 	// assert body to map
 	bodyMap, ok := body.(map[string]interface{})

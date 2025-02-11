@@ -11,7 +11,7 @@ type (
 	}
 )
 
-func (co *Sdk) MakeTrip(input veritechModels.MakeTripBodyModel) (*veritechModels.MakeTripResponse, error) {
+func (co *sdk) MakeTrip(input veritechModels.MakeTripBodyModel) (*veritechModels.MakeTripResponse, error) {
 	co.Command = "PL_MDVIEW_005"
 	// co.GroupCode = "imCheckMovementItem_001"
 

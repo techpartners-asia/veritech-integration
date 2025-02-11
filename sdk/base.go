@@ -5,21 +5,21 @@ type BaseService interface {
 	ProductService() ProductService
 }
 
-type Sdk struct {
+type sdk struct {
 	BaseServiceModel
 }
 
 func New(input BaseServiceModel) BaseService {
-	return &Sdk{
+	return &sdk{
 		input,
 	}
 }
 
-func (co *Sdk) StaffService() StaffManagerService {
+func (co *sdk) StaffService() StaffManagerService {
 	return co
 }
 
-func (co *Sdk) ProductService() ProductService {
+func (co *sdk) ProductService() ProductService {
 	// co.Command = "MTM_ITEM_004"
 	return co
 }

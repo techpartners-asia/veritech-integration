@@ -10,7 +10,7 @@ type StaffManagerService interface {
 	GetStaffCode(code string) string
 }
 
-func (co *Sdk) GetManagerCode(code string) string {
+func (co *sdk) GetManagerCode(code string) string {
 
 	co.Command = "mtm_sales_skk_code_004"
 
@@ -28,7 +28,7 @@ func (co *Sdk) GetManagerCode(code string) string {
 	return res.Response.Result.StoreKeeperKeyCode
 }
 
-func (co *Sdk) GetStaffCode(code string) string {
+func (co *sdk) GetStaffCode(code string) string {
 	co.Command = "mtm_sales_skk_code_004"
 
 	body := map[string]interface{}{

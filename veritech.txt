@@ -5,3 +5,84 @@
 
 5. TakeStaffIncomeOutcome (// Ажилтаны орлого, зарлагыг авах odortoi)
 6. SendInvoice (// Баримт бичиг илгээх)
+
+
+
+
+
+
+
+// Get Product Info Request Body 
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}",
+    "command": "PL_MDVIEW_005",
+    "parameters": {
+        "systemmetagroupcode": "MTM_ITEM_004",
+        "ignorepermission": "1",
+        "itemCode": "itemCode"   
+}
+}
+
+
+
+// Дүүргэлт илгээх
+{
+    "username": "{{username}}",
+    "password": "{{password}}",
+    "command": "PL_MDVIEW_005",
+    "parameters": {
+        "systemmetagroupcode": "imCheckMovementItem_001",
+        "ignorepermission": "1",
+        " fromstorekeeperkeycode": " MTM-INV-002",
+        " tostorekeeperkeycode": " MTM-INV-003",
+        " bookdate": " 2024-06-05",
+        " description": " test3",
+        " bookdtl": [
+        {
+ " refitemid": 16253202246054,
+        " transferqty": 2,
+              }
+         ]  
+}
+}
+
+//Нярав код авах
+{
+    "username": "{{username}}",
+    "password": "{{password}}",
+    " languageCode": " mn",
+    " command": " mtm_sales_skk_code_004",
+    "parameters": {
+        " storeKeeperKeyCode ": " MTM-INV-009"
+}
+}
+
+
+//Бусад орлого зарлага татах
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}",
+    " languageCode": " mn",
+    " command": "sales_QTY_MTM_004",
+    "parameters": {
+        "filterStoreKeeperKeyCode": "MTM-INV-225",
+        "filterbookdate": "2024-08-02",
+}
+}
+
+
+
+//Эхний үлдэгдэл татах
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}",
+    " languageCode": " mn",
+    " command": "sales_BEGIN_QTY_MTM_004",
+    "parameters": {
+        "filterStoreKeeperKeyCode": "MTM-INV-225"
+}
+}

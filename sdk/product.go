@@ -10,7 +10,7 @@ type ProductService interface {
 }
 
 // * NOTE * : Барааны мэдээлэл авах
-func (co *Sdk) GetProductInfo(code string) (*map[string]veritechModels.ProductInfoResponse, error) {
+func (co *sdk) GetProductInfo(code string) (*map[string]veritechModels.ProductInfoResponse, error) {
 	co.Command = "PL_MDVIEW_005"
 
 	body := map[string]interface{}{
