@@ -1,5 +1,9 @@
 package veritechModels
 
+const (
+	VERITECH_SUCCESS = "success"
+)
+
 type (
 	BaseServiceModel struct {
 		Username         string `json:"username"`
