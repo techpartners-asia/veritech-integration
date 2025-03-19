@@ -9,6 +9,7 @@ import (
 
 type (
 	SaleReportsService interface {
+		SendSaleReport(input SaleReportInput) (*SaleReportResponse, error)
 	}
 )
 

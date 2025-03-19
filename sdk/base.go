@@ -4,6 +4,7 @@ type BaseService interface {
 	StaffService() StaffManagerService
 	ProductService() ProductService
 	TripService() TripService
+	SaleReportsService() SaleReportsService
 }
 
 type sdk struct {
@@ -26,5 +27,9 @@ func (co *sdk) ProductService() ProductService {
 }
 
 func (co *sdk) TripService() TripService {
+	return co
+}
+
+func (co *sdk) SaleReportsService() SaleReportsService {
 	return co
 }
