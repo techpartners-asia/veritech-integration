@@ -14,7 +14,7 @@ type (
 )
 
 type SaleReportProductInputItem struct {
-	ProductID       int     `json:"productId"`
+	ProductID       string  `json:"productId"`
 	Quantity        int     `json:"invoiceQty"`
 	UnitPrice       float64 `json:"unitPrice"`
 	LineTotalPrice  float64 `json:"lineTotalPrice"`
@@ -29,6 +29,8 @@ type SaleReportInput struct {
 	StoreCode   string                       `json:"storeCode"`
 	SectionCode string                       `json:"sectionCode"`
 	InvoiceDate string                       `json:"invoiceDate"`
+	TotalAmount float64                      `json:"totalAmount"`
+	TotalVat    float64                      `json:"totalVat"`
 	Items       []SaleReportProductInputItem `json:"SDM_SM_SALES_INVOICE_DETAIL_DV"`
 }
 
@@ -105,33 +107,24 @@ func (co *sdk) SendSaleReport(input SaleReportInput) (*SaleReportResponse, error
 
 	co.Command = "smSalesInvoiceHeaderStoreVMSteso"
 
-	totalVat := 0.0
-	totalAmount := 0.0
-
-	// * NOTE * : Get Total Amounts and Vat
-	for _, item := range input.Items {
-		totalVat += item.LineTotalVat
-		totalAmount += item.LineTotalAmount
-	}
-
 	body := map[string]interface{}{
 		"parameters": map[string]interface{}{
 			"storeCode":                      input.StoreCode,
 			"sectionCode":                    input.SectionCode,
 			"invoiceDate":                    input.InvoiceDate,
-			"vat":                            totalVat,
-			"total":                          totalAmount,
+			"vat":                            input.TotalVat,
+			"total":                          input.TotalAmount,
 			"SDM_SM_SALES_INVOICE_DETAIL_DV": input.Items,
 		},
 	}
-	// Add logic to send the body to the server
+
 	res, err := veritechUtils.GetResponse[SaleReportResponse](co.Send, body)
 	if err != nil {
 		return nil, err
 	}
 
 	if res.Response.Status != veritechModels.VERITECH_SUCCESS {
-		return nil, fmt.Errorf("Failed to send sale report")
+		return nil, fmt.Errorf("Failed to send sale report: %v", res)
 	}
 
 	return &res.Response.Result, nil
