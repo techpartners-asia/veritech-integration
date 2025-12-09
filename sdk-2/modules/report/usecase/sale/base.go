@@ -29,8 +29,13 @@ func New(client *resty.Client, input veritechSdkModels.BaseServiceInput) ReportS
 func (r *reportSaleUsecase) Send(input reportSaleDTO.SendRequestDTO) (*reportSaleDTO.SendResponseDTO, error) {
 
 	for _, item := range input.Items {
-		if !r.productUsecase.IsExist(item.ProductID) {
-			return nil, fmt.Errorf("%v product is not created in the veritech system", item.ProductID)
+		isExist, err := r.productUsecase.IsExist(item.ProductID)
+		if err != nil {
+			return nil, err
+		}
+
+		if !isExist {
+			return nil, fmt.Errorf("%v product : %v", item.ProductID, err.Error())
 		}
 	}
 
