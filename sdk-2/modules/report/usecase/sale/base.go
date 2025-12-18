@@ -35,13 +35,13 @@ func (r *reportSaleUsecase) Send(input reportSaleDTO.SendRequestDTO) (*reportSal
 		}
 
 		if !isExist {
-			return nil, fmt.Errorf("%v product : %v", item.ProductID, err.Error())
+			return nil, fmt.Errorf("%v product is not exist", item.ProductID)
 		}
 	}
 
 	var response veritechSdkModels.BaseServiceResponse[reportSaleDTO.SendResponseDTO]
 
-	totalVat, totalAmount, actualItems := r.CalculateTotals(input.Items)
+	totalVat, totalAmount, actualItems := r.Format(input.Items)
 
 	res, err := r.client.R().
 		SetBody(map[string]interface{}{
@@ -70,29 +70,49 @@ func (r *reportSaleUsecase) Send(input reportSaleDTO.SendRequestDTO) (*reportSal
 	return &response.Response.Result, nil
 }
 
-func (r *reportSaleUsecase) CalculateTotals(items []reportSaleDTO.SendRequestItemDTO) (float64, float64, []reportSaleDTO.SendRequestActualItemDTO) {
+func (r *reportSaleUsecase) Format(items []reportSaleDTO.SendRequestItemDTO) (float64, float64, []reportSaleDTO.SendRequestActualItemDTO) {
 
+	var groupedItems = make(map[string]reportSaleDTO.SendRequestActualItemDTO)
 	totalVat := 0.0
 	totalAmount := 0.0
-	actualItems := make([]reportSaleDTO.SendRequestActualItemDTO, len(items))
 
-	for i, item := range items {
+	for _, item := range items {
 
 		unitPrice := utils.NumberPrecision(item.TotalPrice / float64(item.Qty))
 		unitVat := utils.CalculateVat(unitPrice)
-
 		unitWithNoVat := utils.CalculateWithNoVat(unitPrice)
 
-		actualItems[i] = reportSaleDTO.SendRequestActualItemDTO{
-			SendRequestItemDTO: item,
-			UnitPrice:          unitPrice,
-			UnitVat:            unitVat,
-			LineTotalVat:       utils.NumberPrecision(unitVat * float64(item.Qty)),
-			UnitAmount:         unitWithNoVat,
-			LineTotalAmount:    utils.NumberPrecision(unitWithNoVat * float64(item.Qty)),
-		}
+		if _, ok := groupedItems[item.ProductID]; ok {
+			grouped := groupedItems[item.ProductID]
+			grouped.UnitPrice += unitPrice
+			grouped.UnitVat += unitVat
+			grouped.LineTotalVat += utils.NumberPrecision(unitVat * float64(item.Qty))
+			grouped.UnitAmount += unitWithNoVat
+			grouped.LineTotalAmount += utils.NumberPrecision(unitWithNoVat * float64(item.Qty))
+			grouped.Description += item.Description
+			grouped.Qty += item.Qty
+			grouped.TotalPrice += item.TotalPrice
 
-		totalVat += unitVat
+			groupedItems[item.ProductID] = grouped
+		} else {
+			groupedItems[item.ProductID] = reportSaleDTO.SendRequestActualItemDTO{
+				ProductID:       item.ProductID,
+				Qty:             item.Qty,
+				TotalPrice:      item.TotalPrice,
+				Description:     item.Description,
+				UnitPrice:       unitPrice,
+				UnitVat:         unitVat,
+				LineTotalVat:    utils.NumberPrecision(unitVat * float64(item.Qty)),
+				UnitAmount:      unitWithNoVat,
+				LineTotalAmount: utils.NumberPrecision(unitWithNoVat * float64(item.Qty)),
+			}
+		}
+	}
+
+	var actualItems []reportSaleDTO.SendRequestActualItemDTO
+	for _, item := range groupedItems {
+		actualItems = append(actualItems, item)
+		totalVat += item.UnitVat
 		totalAmount += item.TotalPrice
 	}
 

@@ -18,7 +18,10 @@ type (
 	}
 
 	SendRequestActualItemDTO struct {
-		SendRequestItemDTO
+		ProductID       string  `json:"productId"`       // * Бүтээгдэхүүний код
+		Qty             int     `json:"invoiceQty"`      // * Тоо ширхэг
+		TotalPrice      float64 `json:"lineTotalPrice"`  // * Барааны тоо хэмжээгээр үржсэн дүн байна . (НӨАТ - шингэсэн дүн байна)
+		Description     string  `json:"description"`     // * Optional : Шаардлагатай тайлбарыг барааны мөр бүрт явуулж болно
 		UnitPrice       float64 `json:"unitPrice"`       // * Барааны үнэ байна
 		UnitVat         float64 `json:"unitVat"`         // * Барааны нэгжийн НӨАТ
 		LineTotalVat    float64 `json:"lineTotalVat"`    // * Барааны тоо хэмжээгээр үржсэн НӨАТ дүн байна
