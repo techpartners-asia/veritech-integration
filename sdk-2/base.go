@@ -7,6 +7,7 @@ import (
 	veritechSdkModels "github.com/techpartners-asia/veritech-integration/sdk-2/models"
 	usecaseProduct "github.com/techpartners-asia/veritech-integration/sdk-2/modules/product/usecase"
 	usecaseReportFinance "github.com/techpartners-asia/veritech-integration/sdk-2/modules/report/usecase/finance"
+	usecaseReportSale "github.com/techpartners-asia/veritech-integration/sdk-2/modules/report/usecase/sale"
 	usecaseWarehouseStaff "github.com/techpartners-asia/veritech-integration/sdk-2/modules/warehouse/staff/usecase"
 	usecaseWarehouseStorage "github.com/techpartners-asia/veritech-integration/sdk-2/modules/warehouse/storage/usecase"
 )
@@ -17,6 +18,7 @@ type Sdk struct {
 	Storage       usecaseWarehouseStorage.WarehouseStorageUsecase
 	Product       usecaseProduct.ProductUsecase
 	ReportFinance usecaseReportFinance.ReportFinanceUsecase
+	ReportSale    usecaseReportSale.ReportSaleUsecase
 }
 
 func New(input veritechSdkModels.BaseServiceInput) *Sdk {
@@ -29,13 +31,14 @@ func New(input veritechSdkModels.BaseServiceInput) *Sdk {
 		Storage:       usecaseWarehouseStorage.New(client, input),
 		Product:       usecaseProduct.New(client, input),
 		ReportFinance: usecaseReportFinance.New(client, input),
+		ReportSale:    usecaseReportSale.New(client, input),
 	}
 }
 
 func NewTest() *Sdk {
 	return New(veritechSdkModels.BaseServiceInput{
-		Host:     "http://veritech.zahii.mn",
+		Host:     "http://10.10.8.25:8080",
 		Username: "anketIntegration",
-		Password: "Teso@123",
+		Password: "89",
 	})
 }

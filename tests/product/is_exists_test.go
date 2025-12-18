@@ -9,7 +9,7 @@ import (
 
 func TestIsExist(t *testing.T) {
 	sdk := veritechSdk.NewTest()
-	isExist, err := sdk.Product.IsExist("21080018")
+	isExist, err := sdk.Product.IsExist("20300101")
 	assert.NoError(t, err)
 	assert.True(t, isExist)
 
